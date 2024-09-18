@@ -30,6 +30,6 @@ Natural Language Processing: Use Python's NLTK to allow users to input calculati
 Join the MoodCalc Community!
 Whether you're a Python enthusiast, a student, or someone who believes in emotionally intelligent tools, we'd love to have you on board!
 
-🌐 Try MoodCalc
+
 🛠 Want to Contribute?
-Check out our CONTRIBUTING.md for guidelines on how to help enhance MoodCalc's Python backend and overall functionality!
+🌐 Try MoodCalc
