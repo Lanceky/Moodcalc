@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoodCalc</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .mood-excited { background-color: #FFFF00; }
+        .mood-confident { background-color: #00FF00; }
+        .mood-neutral { background-color: #FFFFFF; }
+        .mood-anxious { background-color: #FFA500; }
+        .mood-frustrated { background-color: #FF0000; }
+    </style>
+</head>
+<body>
+    <h1>MoodCalc</h1>
+    
+    <label for="mood">Select your mood:</label>
+    <select id="mood">
+        <option value="Excited">Excited</option>
+        <option value="Confident">Confident</option>
+        <option value="Neutral">Neutral</option>
+        <option value="Anxious">Anxious</option>
+        <option value="Frustrated">Frustrated</option>
+    </select>
+
+    <br><br>
+
+    <label for="numbers">Enter numbers (comma-separated):</label>
+    <input type="text" id="numbers" placeholder="e.g., 1,2,3,4,5">
+
+    <br><br>
+
+    <label for="operation">Select operation:</label>
+    <select id="operation">
+        <option value="sum">Sum</option>
+        <option value="mean">Mean</option>
+        <option value="median">Median</option>
+        <option value="mode">Mode</option>
+    </select>
+
+    <br><br>
+
+    <button onclick="calculate()">Calculate</button>
+
+    <p id="result"></p>
+
+    <hr>
+
+    <h2>Suggested Resources</h2>
+    <label for="topic">Select topic:</label>
+    <select id="topic">
+        <option value="algebra">Algebra</option>
+        <option value="calculus">Calculus</option>
+    </select>
+    <button onclick="suggestResources()">Get Suggestions</button>
+    <ul id="resources"></ul>
+
+    <script>
+        function updateMood() {
+            const mood = document.getElementById('mood').value;
+            document.body.className = `mood-${mood.toLowerCase()}`;
+        }
+
+        document.getElementById('mood').addEventListener('change', updateMood);
+        updateMood();
+
+        async function calculate() {
+            const mood = document.getElementById('mood').value;
+            const numbers = document.getElementById('numbers').value.split(',').map(Number);
+            const operation = document.getElementById('operation').value;
+
+            const response = await fetch('http://localhost:5000/calculate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mood, numbers, operation }),
+            });
+
+            const data = await response.json();
+            document.getElementById('result').textContent = `Result: ${data.result}`;
+        }
+
+        async function suggestResources() {
+            const mood = document.getElementById('mood').value;
+            const topic = document.getElementById('topic').value;
+
+            const response = await fetch('http://localhost:5000/suggest', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mood, topic }),
+            });
+
+            const data = await response.json();
+            const resourcesList = document.getElementById('resources');
+            resourcesList.innerHTML = '';
+            data.resources.forEach(resource => {
+                const li = document.createElement('li');
+                li.textContent = `${resource.title} (Difficulty: ${resource.difficulty})`;
+                resourcesList.appendChild(li);
+            });
+        }
+    </script>
+</body>
+</html>
